@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Career Point University Attendance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <section class="screen" id="auth-screen">
+        <div class="auth-card">
+          <div class="auth-brand">
+            <div class="seal">CPU</div>
+            <div>
+              <p class="eyebrow">Career Point University</p>
+              <h1>Class Attendance</h1>
+              <p class="muted">Developer: Yash Vardhan Singh</p>
+            </div>
+          </div>
+
+          <div class="auth-tabs">
+            <button class="tab active" data-tab="signin">Sign in</button>
+            <button class="tab" data-tab="register">Create account</button>
+          </div>
+
+          <div class="callout hidden" id="auth-error"></div>
+
+          <form id="signin-form" class="auth-form">
+            <div class="field">
+              <label for="signin-name">Full name</label>
+              <input
+                id="signin-name"
+                type="text"
+                placeholder="e.g., Dr. Mehta"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="signin-pin">PIN</label>
+              <input id="signin-pin" type="password" required />
+            </div>
+            <div class="field inline">
+              <label>
+                <input id="remember" type="checkbox" /> Remember this device
+              </label>
+            </div>
+            <button type="submit" class="primary">Sign in</button>
+            <p class="auth-footer">
+              <button type="button" class="link" id="forgot-pin">Forgot PIN?</button>
+            </p>
+          </form>
+
+          <form id="register-form" class="auth-form hidden">
+            <div class="field">
+              <label for="register-name">Full name</label>
+              <input
+                id="register-name"
+                type="text"
+                placeholder="e.g., Prof. Arora"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="register-role">Role</label>
+              <select id="register-role">
+                <option value="teacher">Teacher</option>
+                <option value="rep">Class Representative</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="register-pin">PIN (4+ digits)</label>
+              <input id="register-pin" type="password" required />
+            </div>
+            <button type="submit" class="primary">Create account</button>
+            <p class="muted small">
+              Each account sees only its own classes and student records.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section class="screen hidden" id="app-screen">
+        <header class="topbar">
+          <div class="brand">
+            <div class="seal">CPU</div>
+            <div>
+              <p class="eyebrow">Attendance</p>
+              <h2>Class Attendance</h2>
+            </div>
+          </div>
+
+          <button class="class-switch" id="open-class-switcher">
+            <span class="class-label" id="current-class-name">Select class</span>
+            <span class="chevron">▾</span>
+          </button>
+
+          <div class="top-actions">
+            <div class="field compact">
+              <label for="date">Date</label>
+              <input type="date" id="date" />
+            </div>
+            <div class="user-chip" id="user-chip"></div>
+            <button class="ghost" id="logout">Sign out</button>
+          </div>
+        </header>
+
+        <main class="main">
+          <section class="card summary">
+            <div>
+              <p class="eyebrow">Class summary</p>
+              <h3 id="summary-class">No class selected</h3>
+              <p class="muted" id="summary-date">Choose a class to begin.</p>
+            </div>
+            <div class="stats-inline">
+              <span><strong id="present-count">0</strong> Present</span>
+              <span><strong id="absent-count">0</strong> Absent</span>
+              <span><strong id="unmarked-count">0</strong> Unmarked</span>
+            </div>
+          </section>
+
+          <section class="card list">
+            <div class="list-header">
+              <div>
+                <h3>Students</h3>
+                <p class="muted small">
+                  Tap a status to mark attendance instantly.
+                </p>
+              </div>
+              <div class="list-actions">
+                <div class="field compact">
+                  <label for="search">Search</label>
+                  <input
+                    id="search"
+                    type="search"
+                    placeholder="Search by name or ID"
+                  />
+                </div>
+                <button class="ghost" id="open-student-modal">Add student</button>
+              </div>
+            </div>
+
+            <div class="bulk-actions">
+              <button class="ghost" id="mark-all-present">Mark all present</button>
+              <button class="ghost" id="mark-all-absent">Mark all absent</button>
+              <button class="ghost" id="clear-day">Clear today</button>
+            </div>
+
+            <div class="student-list" id="student-table"></div>
+          </section>
+
+          <section class="tools" id="tools">
+            <div class="tools-header">
+              <div>
+                <p class="eyebrow">Secondary tools</p>
+                <h3>Exports and roster management</h3>
+              </div>
+              <div class="link-list">
+                <a href="#exports">Exports</a>
+                <a href="#imports">Imports</a>
+              </div>
+            </div>
+
+            <div class="tool-grid">
+              <div class="card tool" id="exports">
+                <h4>WhatsApp + Spreadsheet</h4>
+                <p class="muted small">
+                  Copy a WhatsApp-ready summary or download the CSV.
+                </p>
+                <div class="button-row">
+                  <button class="primary" id="copy-whatsapp">Copy WhatsApp</button>
+                  <button class="ghost" id="download-csv">Download CSV</button>
+                  <button class="ghost" id="download-txt">Download TXT</button>
+                </div>
+                <textarea id="whatsapp-text" rows="8" readonly></textarea>
+              </div>
+
+              <div class="card tool" id="imports">
+                <h4>Bulk import students</h4>
+                <p class="muted small">Upload a CSV with Name and ID columns.</p>
+                <div class="field">
+                  <label for="import-file">Select CSV file</label>
+                  <input type="file" id="import-file" accept=".csv" />
+                </div>
+                <div class="button-row">
+                  <button class="ghost" id="import-csv">Import CSV</button>
+                  <button class="ghost" id="download-sample">Download sample</button>
+                </div>
+                <div class="callout hidden" id="import-summary"></div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <button class="fab" id="submit-attendance">Submit Attendance</button>
+        <footer class="footer">Made by Yash Vardhan Singh</footer>
+      </section>
+
+      <div class="overlay hidden" id="class-overlay">
+        <div class="overlay-card">
+          <div class="overlay-header">
+            <div>
+              <p class="eyebrow">My classes</p>
+              <h3>Select a class</h3>
+            </div>
+            <div class="button-row">
+              <button class="ghost" id="rename-class">Rename</button>
+              <button class="ghost" id="delete-class">Delete</button>
+              <button class="ghost" id="close-class-switcher">Close</button>
+            </div>
+          </div>
+          <div class="class-grid" id="class-grid"></div>
+          <button class="fab small" id="new-class">+ New class</button>
+        </div>
+      </div>
+
+      <div class="overlay hidden" id="student-modal">
+        <div class="overlay-card small">
+          <div class="overlay-header">
+            <h3>Add student</h3>
+            <button class="ghost" id="close-student-modal">Close</button>
+          </div>
+          <form id="student-form" class="auth-form">
+            <div class="field">
+              <label for="student-name">Student name</label>
+              <input
+                type="text"
+                id="student-name"
+                placeholder="e.g., Priya Sharma"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="student-id">Student ID</label>
+              <input
+                type="text"
+                id="student-id"
+                placeholder="e.g., CPU-2041"
+                required
+              />
+            </div>
+            <button type="submit" class="primary">Add</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="overlay hidden" id="forgot-pin-overlay">
+        <div class="overlay-card small">
+          <div class="overlay-header">
+            <h3>Reset PIN</h3>
+            <button type="button" class="ghost" id="close-forgot-pin">Close</button>
+          </div>
+          <div class="callout hidden" id="reset-pin-error"></div>
+          <form id="reset-pin-form" class="auth-form">
+            <div class="field">
+              <label for="reset-pin-name">Full name (as registered)</label>
+              <input
+                type="text"
+                id="reset-pin-name"
+                placeholder="e.g., Dr. Mehta"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="reset-pin-new">New PIN (4+ digits)</label>
+              <input type="password" id="reset-pin-new" required minlength="4" />
+            </div>
+            <div class="field">
+              <label for="reset-pin-confirm">Confirm new PIN</label>
+              <input type="password" id="reset-pin-confirm" required minlength="4" />
+            </div>
+            <button type="submit" class="primary">Reset PIN</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast">Attendance saved</div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
